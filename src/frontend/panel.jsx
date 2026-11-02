@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ForgeReconciler, {
   Button,
   Heading,
@@ -22,11 +22,17 @@ const blank = { decision: '', reason: '' };
 
 const App = () => {
   const [state, setState] = useState(null);
-  const [form, setForm] = useState(blank);
+  const form = useRef(blank);
+  const [formVersion, setFormVersion] = useState(0);
   const [editingId, setEditingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const resetForm = (values) => {
+    form.current = values;
+    setFormVersion((version) => version + 1);
+  };
 
   useEffect(() => {
     invoke('load').then((result) => {
@@ -50,11 +56,11 @@ const App = () => {
 
   const save = () => {
     const clear = () => {
-      setForm(blank);
+      resetForm(blank);
       setEditingId(null);
     };
-    if (editingId) run('update', { ...form, id: editingId }, clear);
-    else run('add', form, clear);
+    if (editingId) run('update', { ...form.current, id: editingId }, clear);
+    else run('add', form.current, clear);
   };
 
   if (!state && !message) return <Spinner label="Loading decisions" />;
@@ -67,16 +73,22 @@ const App = () => {
       <Stack space="space.100">
         <Heading size="small">{editingId ? 'Edit decision' : 'Add a decision'}</Heading>
         <Textfield
+          key={`decision-${formVersion}`}
           aria-label="Decision"
           placeholder="What did you decide?"
-          value={form.decision}
-          onChange={(event) => setForm({ ...form, decision: event.target.value })}
+          defaultValue={form.current.decision}
+          onChange={(event) => {
+            form.current = { ...form.current, decision: event.target.value };
+          }}
         />
         <TextArea
+          key={`reason-${formVersion}`}
           aria-label="Reason"
           placeholder="Why did you decide this?"
-          value={form.reason}
-          onChange={(event) => setForm({ ...form, reason: event.target.value })}
+          defaultValue={form.current.reason}
+          onChange={(event) => {
+            form.current = { ...form.current, reason: event.target.value };
+          }}
         />
         <Inline space="space.100">
           <Button appearance="primary" isDisabled={saving} onClick={save}>
@@ -86,7 +98,7 @@ const App = () => {
             <Button
               onClick={() => {
                 setEditingId(null);
-                setForm(blank);
+                resetForm(blank);
               }}
             >
               Cancel
@@ -109,7 +121,7 @@ const App = () => {
               appearance="subtle"
               onClick={() => {
                 setEditingId(item.id);
-                setForm({ decision: item.decision, reason: item.reason });
+                resetForm({ decision: item.decision, reason: item.reason });
               }}
             >
               Edit
