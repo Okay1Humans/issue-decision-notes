@@ -4,6 +4,8 @@ A sample Forge app for recording decisions and the reasons behind them on Jira i
 
 Built with AI assistance. The maintainer reviewed and tested the app before publishing.
 
+![Decision notes panel on a Jira issue](docs/decision-panel.png)
+
 ## Features
 
 - Issue panel showing the issue key and title
@@ -37,4 +39,15 @@ forge install --demo-site
 npm test
 ```
 
-The unit tests cover the decision rules. Forge deployment and Jira behavior must be tested on a development site.
+The unit tests cover the decision rules.
+
+These were checked on a Jira development site:
+
+- Panel shows the issue key and title
+- Add, edit and delete work
+- Saved notes survive a page reload
+- Each issue keeps separate notes
+- Blank input shows a clear message
+- The admin setting blocks invalid values
+
+The 50-decision limit, long text limit and users without issue access haven't been tested in Jira yet.
