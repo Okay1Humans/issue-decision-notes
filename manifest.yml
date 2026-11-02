@@ -1,0 +1,32 @@
+modules:
+  jira:issuePanel:
+    - key: decision-notes-panel
+      resource: panel
+      resolver:
+        function: resolver
+      render: native
+      title: Decision notes
+      icon: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
+  jira:adminPage:
+    - key: decision-notes-admin
+      resource: admin
+      resolver:
+        function: resolver
+      render: native
+      title: Decision notes settings
+  function:
+    - key: resolver
+      handler: resolvers/index.handler
+resources:
+  - key: panel
+    path: src/frontend/panel.jsx
+  - key: admin
+    path: src/frontend/admin.jsx
+app:
+  id: "ari:cloud:ecosystem::app/00000000-0000-0000-0000-000000000000"
+  runtime:
+    name: nodejs24.x
+permissions:
+  scopes:
+    - read:jira-work
+    - storage:app
