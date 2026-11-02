@@ -23,7 +23,7 @@ resources:
   - key: admin
     path: src/frontend/admin.jsx
 app:
-  id: "ari:cloud:ecosystem::app/00000000-0000-0000-0000-000000000000"
+  id: ari:cloud:ecosystem::app/8b109702-3cd6-476c-b08f-13c5d559c084
   runtime:
     name: nodejs24.x
 permissions:
